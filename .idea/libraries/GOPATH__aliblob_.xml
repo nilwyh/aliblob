@@ -1,0 +1,30 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;aliblob&gt;">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../.." />
+      <root url="file://$PROJECT_DIR$/../../../google.golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../hello" />
+      <root url="file://$PROJECT_DIR$/../../../gosite" />
+      <root url="file://$PROJECT_DIR$/../../../practice" />
+      <root url="file://$PROJECT_DIR$/../../../quickstart" />
+      <root url="file://$PROJECT_DIR$/../../../qiniupkg.com" />
+      <root url="file://$PROJECT_DIR$/../../../gopkg.in" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../.." />
+      <root url="file://$PROJECT_DIR$/../../../google.golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../hello" />
+      <root url="file://$PROJECT_DIR$/../../../gosite" />
+      <root url="file://$PROJECT_DIR$/../../../practice" />
+      <root url="file://$PROJECT_DIR$/../../../quickstart" />
+      <root url="file://$PROJECT_DIR$/../../../qiniupkg.com" />
+      <root url="file://$PROJECT_DIR$/../../../gopkg.in" />
+    </SOURCES>
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>
