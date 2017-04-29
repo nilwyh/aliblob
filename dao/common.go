@@ -7,6 +7,7 @@ import (
 )
 
 var EsClient *elastic.Client = nil
+var EsMediaIndex = beego.AppConfig.String("esindexmedia")
 
 func InitEsClient() {
 	var err error

@@ -24,7 +24,7 @@ func UpdateImageMetadata(src, sha256string, format string, thumb string, goodToS
 		RawId:rawId,
 	}
 	resp, err := EsClient.Index().
-		Index("media").
+		Index(EsMediaIndex).
 		Type("image").
 		BodyJson(image).
 		Refresh("true").
@@ -49,7 +49,7 @@ func UpdateVideoMetadata(src string, sha256string string, format string, modifie
 	}
 
 	resp, err := EsClient.Index().
-		Index("media").
+		Index(EsMediaIndex).
 		Type("video").
 		BodyJson(video).
 		Refresh("true").
@@ -79,7 +79,7 @@ func UpdateOtherMetadata(src string, sha256string string, suffix string) (string
 	}
 
 	resp, err := EsClient.Index().
-		Index("media").
+		Index(EsMediaIndex).
 		Type("other").
 		BodyJson(other).
 		Refresh("true").
