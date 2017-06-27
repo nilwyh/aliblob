@@ -12,7 +12,8 @@ type Image struct {
 	Src         string
 	Domain      string
 	SHA256      string
-	Group       string
+	Collect     string
+	AuthGroup   string
 	IsRaw bool
 	RawId string
 	Thumb string

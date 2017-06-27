@@ -7,7 +7,7 @@ import (
 )
 
 
-func UpdateImageMetadata(src, sha256string, format string, thumb string, goodToShow bool, isRaw bool, rawId string, modifiedTime time.Time) (string, error) {
+func UpdateImageMetadata(src, sha256string, format string, thumb string, goodToShow bool, isRaw bool, rawId string, modifiedTime time.Time, collect string, authGroup string) (string, error) {
 	if EsClient == nil {
 		InitEsClient()
 	}
@@ -22,6 +22,9 @@ func UpdateImageMetadata(src, sha256string, format string, thumb string, goodToS
 		Format:format,
 		IsRaw: isRaw,
 		RawId:rawId,
+		Collect:collect,
+		AuthGroup:authGroup,
+
 	}
 	resp, err := EsClient.Index().
 		Index(EsMediaIndex).

@@ -4,7 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"os"
 	"time"
-	"strconv"
 	"strings"
 	"github.com/nilwyh/aliblob/dao"
 	"mime/multipart"
@@ -26,12 +25,16 @@ type UploadController struct {
 func (this *UploadController) Post() {
 	files, err := this.GetFiles("myfiles")
 	//TODO: trim /
-	collection := this.GetString("collection")+"/"
-	year,month,_:= time.Now().Date()
-	shard:=strconv.Itoa(year)+"_"+month.String()+"/"
+	collection := "default"
+	if mc := this.GetString("mycollect"); mc !="" {
+		collection = this.GetString("mycollect")
+	}
+	authGroup:= this.GetString("myauthgroup")
+	//year,month,_:= time.Now().Date()
+	//shard:=strconv.Itoa(year)+"_"+month.String()+"/"
 	root:=beego.AppConfig.String("blobroot")
-	this.localpath=root + collection + shard
-	this.urlpath=collection+shard
+	this.localpath=root + collection + "/"
+	this.urlpath=collection + "/"
 	if err != nil {
 		this.Redirect(ERROR_REDIRECT, 302)
 		return
@@ -46,15 +49,15 @@ func (this *UploadController) Post() {
 			timestamp = time.Now().UnixNano()/1000000
 		}
 		modifiedTime := time.Unix(0, timestamp * int64(time.Millisecond))
-		this.handleFile(files[i], modifiedTime)
+		this.handleFile(files[i], modifiedTime, collection, authGroup)
 	}
 	this.Redirect(SUCCESS_REDIRECT, 302)
 }
 
-func (this *UploadController) handleFile(f *multipart.FileHeader, modifiedTime time.Time) {
+func (this *UploadController) handleFile(f *multipart.FileHeader, modifiedTime time.Time, collect, authGroup string) {
 	suffix := getSuffix(f.Filename)
 	if _, ok := IMAGE[suffix]; ok {
-		this.handleImage(f, suffix, modifiedTime)
+		this.handleImage(f, suffix, modifiedTime, collect, authGroup)
 	} else if _, ok := VIDEO[suffix]; ok {
 		this.handleVideo(f, suffix, modifiedTime)
 	} else {
@@ -62,7 +65,7 @@ func (this *UploadController) handleFile(f *multipart.FileHeader, modifiedTime t
 	}
 }
 
-func (this *UploadController) handleImage(f *multipart.FileHeader, suffix string, modifiedTime time.Time) {
+func (this *UploadController) handleImage(f *multipart.FileHeader, suffix string, modifiedTime time.Time, collect, authGroup string) {
 	//for each fileheader, get a handle to the actual file
 	fileName, hashString, err:= dao.CopyFileMultipart(f, this.localpath, suffix)
 	if err!=nil {
@@ -78,14 +81,14 @@ func (this *UploadController) handleImage(f *multipart.FileHeader, suffix string
 		return
 	}
 
-	rawId, err:=dao.UpdateImageMetadata(this.urlpath+fileName, hashString, IMAGE[suffix], thumb, goodToShow, true, "", modifiedTime)
+	rawId, err:=dao.UpdateImageMetadata(this.urlpath+fileName, hashString, IMAGE[suffix], thumb, goodToShow, true, "", modifiedTime, collect, authGroup)
 	if err!=nil {
 		this.Redirect(ERROR_REDIRECT, 302)
 		logs.Warn("err:%s",err)
 		return
 	}
 	if !goodToShow {
-		dao.UpdateImageMetadata(this.urlpath+resizedFileName, hashString, IMAGE[suffix], thumb, true, false, rawId, modifiedTime)
+		dao.UpdateImageMetadata(this.urlpath+resizedFileName, hashString, IMAGE[suffix], thumb, true, false, rawId, modifiedTime, collect, authGroup)
 	}
 }
 
