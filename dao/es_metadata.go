@@ -4,8 +4,49 @@ import (
 	"context"
 	"github.com/nilwyh/aliblob/models"
 	"time"
+	"gopkg.in/olivere/elastic.v5"
 )
 
+func CreateCollect(name, des string, groups []string) (bool, error) {
+
+	if EsClient == nil {
+		InitEsClient()
+	}
+	ctx := context.Background()
+
+	nameQuery := elastic.NewTermQuery("Name.keyword", true)
+
+	// Add a document to the index
+	eresp, err := EsClient.Search().
+		Index(EsMediaIndex).
+		Type("collect").
+		Query(nameQuery).
+		Do(ctx)
+
+	if err!=nil {
+		return false, err
+	}
+	if eresp.Hits.TotalHits > 0 {
+		return true, nil
+	}
+
+	collect := models.Collect{
+		Name:name,
+		Groups:groups,
+		Description:des,
+	}
+	resp, err := EsClient.Index().
+		Index(EsMediaIndex).
+		Type("collect").
+		BodyJson(collect).
+		Refresh("true").
+		Do(ctx)
+	if err!=nil {
+		return false, err
+	}
+	_ = resp
+	return false, nil
+}
 
 func UpdateImageMetadata(src, sha256string, format string, thumb string, goodToShow bool, isRaw bool, rawId string, modifiedTime time.Time, collect string, authGroup string) (string, error) {
 	if EsClient == nil {

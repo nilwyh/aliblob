@@ -29,6 +29,9 @@ func (this *UploadController) Post() {
 	if mc := this.GetString("mycollect"); mc !="" {
 		collection = this.GetString("mycollect")
 	}
+	//TODO: not create collection here.
+	dao.CreateCollect(collection, "", []string{})
+
 	authGroup:= this.GetString("myauthgroup")
 	//year,month,_:= time.Now().Date()
 	//shard:=strconv.Itoa(year)+"_"+month.String()+"/"
